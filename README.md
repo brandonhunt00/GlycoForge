@@ -41,7 +41,7 @@ glycoforge/ ├─ docker-compose.yml ├─ models/ # GGUF model goes here ├�
 
 ## 4  Quick start (localhost)
 
-# 0) prerequisites: JDK 21, Maven 3.9+, Docker Desktop
+### 0) prerequisites: JDK 21, Maven 3.9+, Docker Desktop
 
 ```
 git clone https://github.com/brandonhunt00/GlycoForge.git
@@ -49,7 +49,7 @@ cd GlycoForge
 ```
 
 
-# 1) pull a Llama-3 model (example: 8B Q4) – fits in 8 GB RAM
+### 1) pull a Llama-3 model (example: 8B Q4) – fits in 8 GB RAM
 ```
 mkdir -p models
 aria2c -x16 -d models \
@@ -57,27 +57,28 @@ aria2c -x16 -d models \
 ```
 
 
-# 2) containers: MySQL + llama.cpp
+### 2) containers: MySQL + llama.cpp
 ```
 docker compose up -d db llama
 docker compose ps          # wait for HEALTHY
 ```
 
 
-# 3) build & boot Spring
+### 3) build & boot Spring
 ```
 mvn -q clean package -DskipTests
 java -jar target/glycoforge-*.jar
 ```
 
 
-Open:
+### 4) Open:
+
 http://localhost:8080/register – create an account
 http://localhost:8080/login – sign in
 Dashboard chat – log meals & get insulin recommendations
 
 
-# 5) Connecting DBeaver (optional)
+### 5) Connecting DBeaver (optional)
 
 Field	Value
 Host	localhost
@@ -87,7 +88,7 @@ User	user
 Pass	password
 
 
-# 6) API cheat-sheet
+### 6) API cheat-sheet
 
 
 Method	Endpoint	Purpose
