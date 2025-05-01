@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: glycoforge-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: glycoforge
+      MYSQL_USER: user       # Replace with a secure user in production/real setup
+      MYSQL_PASSWORD: password # Replace with a secure password in production/real setup
+      MYSQL_ROOT_PASSWORD: rootpassword # Replace with a secure root password
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+        test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost", "-u$$MYSQL_USER", "-p$$MYSQL_PASSWORD"]
+        interval: 10s
+        timeout: 5s
+        retries: 5
+
+  llama:
+    # Placeholder for llama.cpp server
+    # Replace with the actual image and command for your llama.cpp setup
+    image: alpine:latest
+    container_name: glycoforge-llama-placeholder
+    restart: unless-stopped
+    command: sh -c "echo 'Llama.cpp server placeholder running on port 8000...' && sleep infinity"
+    ports:
+      - "8000:8000"
+
+volumes:
+  mysql_data:
+    driver: local
+

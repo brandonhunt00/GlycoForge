@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - GlycoForge</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Simple scrollbar styling */
+        .sidebar-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sidebar-scroll::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; /* cool-gray-300 */
+            border-radius: 3px;
+        }
+        .chat-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .chat-scroll::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1; /* cool-gray-300 */
+            border-radius: 3px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white shadow-md flex flex-col">
+            <div class="p-4 border-b">
+                <h2 class="text-xl font-bold text-blue-600">GlycoForge</h2>
+            </div>
+            <nav class="flex-1 overflow-y-auto sidebar-scroll p-4 space-y-4">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Latest Recommendation</h3>
+                    <div id="recommendation-card" class="bg-blue-50 p-3 rounded-md text-sm">
+                        <p>Loading recommendation...</p>
+                        <!-- Recommendation details will be loaded here -->
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Recent Meals</h3>
+                    <ul id="meal-history" class="space-y-2">
+                        <!-- Meal history items will be loaded here -->
+                        <li>Loading meals...</li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase mb-2">Recent Injections</h3>
+                    <ul id="injection-history" class="space-y-2">
+                        <!-- Injection history items will be loaded here -->
+                        <li>Loading injections...</li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="p-4 border-t">
+                <button id="logoutButton" class="w-full text-left text-sm text-red-600 hover:text-red-800">
+                    Logout
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 flex flex-col overflow-hidden">
+            <!-- Top Bar (User Info) -->
+            <header class="bg-white shadow-sm p-4 border-b">
+                <div id="user-stats-card" class="max-w-4xl mx-auto">
+                    <h3 class="text-lg font-semibold mb-2">Your Profile</h3>
+                    <div id="user-details" class="text-sm text-gray-700 grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <p>Loading user data...</p>
+                        <!-- User details will be loaded here -->
+                    </div>
+                    <!-- Inline Edit Form (Initially Hidden) -->
+                    <form id="editUserForm" class="hidden mt-4 space-y-2 text-sm">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                            <div>
+                                <label for="editAge">Age:</label>
+                                <input type="number" id="editAge" name="age" class="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
+                            </div>
+                            <div>
+                                <label for="editHeightCm">Height (cm):</label>
+                                <input type="number" id="editHeightCm" name="heightCm" class="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
+                            </div>
+                            <div>
+                                <label for="editWeightKg">Weight (kg):</label>
+                                <input type="number" step="0.1" id="editWeightKg" name="weightKg" class="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
+                            </div>
+                            <div>
+                                <label for="editInsulinRatio">Ratio (U/10g):</label>
+                                <input type="number" step="0.1" id="editInsulinRatio" name="insulinRatio" class="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
+                            </div>
+                            <div class="col-span-2 md:col-span-1">
+                                <label for="editSensitivityFactor">Sensitivity (mg/dL/U):</label>
+                                <input type="number" step="0.1" id="editSensitivityFactor" name="sensitivityFactor" class="mt-1 w-full border border-gray-300 rounded px-2 py-1 text-sm">
+                            </div>
+                        </div>
+                        <div class="flex gap-2">
+                            <button type="submit" class="bg-green-500 text-white px-3 py-1 rounded hover:bg-green-600 text-xs">Save</button>
+                            <button type="button" id="cancelEditUser" class="bg-gray-300 text-gray-700 px-3 py-1 rounded hover:bg-gray-400 text-xs">Cancel</button>
+                        </div>
+                        <div id="editUserMessage" class="text-xs"></div>
+                    </form>
+                    <button id="editUserButton" class="mt-2 text-xs text-blue-600 hover:underline">Edit Profile</button>
+                </div>
+            </header>
+
+            <!-- Chat Area -->
+            <div class="flex-1 overflow-y-auto p-4 flex flex-col">
+                <div id="chat-container" class="flex-1 bg-white rounded-lg shadow p-4 flex flex-col max-w-4xl mx-auto w-full">
+                    <h3 class="text-lg font-semibold mb-4 border-b pb-2">Chat with GlycoForge AI</h3>
+                    <div id="chat-messages" class="flex-1 overflow-y-auto mb-4 space-y-3 chat-scroll pr-2">
+                        <!-- Chat messages will appear here -->
+                        <div class="p-2 rounded bg-blue-100 text-sm self-start max-w-xs md:max-w-md">
+                            Hi there! Describe your meal, and I'll help estimate carbs and recommend insulin. You can also ask general diabetes-related questions.
+                        </div>
+                    </div>
+                    <form id="chat-form" class="flex gap-2">
+                        <input type="text" id="chat-input" placeholder="Describe your meal or ask a question..." required
+                               class="flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+                        <button type="submit"
+                                class="px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Send
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="/js/dashboard.js"></script>
+</body>
+</html>
+
